@@ -1,0 +1,856 @@
+
+\documentclass[a4paper,12pt]{article}
+
+% Pacchetti base
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{listingsutf8}
+\usepackage{forest} % Removed [edges] option to avoid clashes
+\usepackage[pdf]{graphviz}
+\geometry{a4paper, margin=1in}
+
+
+% Definizione dei colori personalizzati
+\definecolor{myorange}{RGB}{255,140,0}  % Arancione per for, if, while
+\definecolor{mygreen}{RGB}{0,150,0}     % Verde per stringhe
+
+% Configurazione dell'ambiente listings
+\lstdefinestyle{mystyle}{
+    language=Java, % Sostituiscilo con Java se necessario
+    keywordstyle=\color{myorange}, % Colore per parole chiave (for, if, while)
+    stringstyle=\color{mygreen},   % Colore per stringhe
+    basicstyle=\ttfamily,          % Font monospaziato
+    commentstyle=\color{gray},      % Commenti in grigio
+    numbers=left,                   % Numerazione delle righe
+    numberstyle=\tiny\color{gray},   % Stile numeri di riga
+    frame=single,                    % Bordo attorno al codice
+    breaklines=true,                  % A capo automatico
+    escapeinside={(*@}{@*)}           % Permette di scrivere in LaTeX nei commenti
+}
+
+% Definizione dei colori
+\definecolor{teorema}{RGB}{138, 43, 226}  % Viola
+\definecolor{codice}{RGB}{255, 140, 0}    % Arancione
+\definecolor{esempio}{RGB}{70, 130, 180}  % Blu acciaio
+\definecolor{esercizio}{RGB}{0, 128, 0}  % Verde
+
+
+% Definizione di ambienti personalizzati
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{definition}{Definizione}[section]
+\newtheorem{example}{Esempio}[section]
+
+\newenvironment{coloredtheorem}
+  {\begin{theorem}\color{teorema}}
+  {\end{theorem}}
+
+\newenvironment{coloreddefinition}
+  {\begin{definition}\color{definizione}}
+  {\end{definition}}
+
+\newenvironment{colorexample}
+  {\begin{example}\color{esempio}}
+  {\end{example}}
+
+% Configurazione codice
+\lstset{
+  language=Java,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  backgroundcolor=\color{codice!10},
+  frame=single,
+  breaklines=true
+}
+
+% Inizio documento
+\begin{document}
+
+% Titolo e autore
+\title{Algoritmi e Strutture Dati}
+\author{Autore: \textit{Antonio Iovine}}
+\date{\today}
+\maketitle
+
+\tableofcontents
+
+\section*{Legenda colori}
+\begin{itemize}
+  \item \textcolor{teorema}{\rule{1cm}{3pt}} \textbf{Teoremi / Definizioni / Dimostrazioni}
+  \item \textcolor{esempio}{\rule{1cm}{3pt}} \textbf{Esempi}
+  \item \textcolor{esercizio}{\rule{1cm}{3pt}} \textbf{Esercizi}
+  \item \textcolor{codice}{\rule{1cm}{3pt}} \textbf{Codice}
+\end{itemize}
+
+\newpage
+
+\section{Introduzione}
+Questo PDF vuole essere una spiegazione più o meno dettagliata di alcuni concetti fondamentali riguardanti gli algoritmi.
+Prima di iniziare è sempre bene fare una premessa, un questo PDF userò principalmente la Java notation quindi sia codice che notazione per i grafi saranno in Java.
+quindi si avra un codice simil java e si preferirà una notazione del tipo $u.d$ piuto che $d[u]$.
+\\
+\\
+Ovviamente l'intento principale non è quello di capire il codice ma il raggionare sul perchè funzioni e come funzioni. Ergo se non si conoscesse java non è un problema.
+
+\section{Concetti Fondamentali}
+
+\subsection{Cos'è un Algoritmo?}
+Un algoritmo è una sequenza finita di passi ben definiti per risolvere un problema, o almeno è la definizione formale, ma poche menate, la domanda che ci poniamo ora è
+cosa ci faccio con un algoritmo?
+\\  
+\\
+La risposta è: un po quel che voglio, se riesco a capire conettualmente come funziona un algoritmo posso applicarlo come più mi fa comodo, riesco a decidere quel è il migliore in base alla situazione, e soprattutto, cosa non banale, se quel problema è risolvibile o meno.
+e da qui vi è la prossima domanda, come faccio a capire quale algoritmo è il migliore per il mio problema?
+
+\subsection{Complessità}
+Per dire che un algoritmo è migliore di un altro bisogna prima confrontarli, ma come fare? beh usando la complessità. \\
+la complessità è uno strumento che ci permette di confrontare due algoritmi in base al tempo e allo spazio che impiegano per risolvere un problema.
+la complessità si divide in due parti:
+\begin{itemize}
+    \item Complessità temporale: indica il tempo che un algoritmo impiega per risolvere un problema.
+    \item Complessità spaziale: indica lo spazio che un algoritmo impiega per risolvere un problema.
+\end{itemize}
+La complessità temporale però, non viene espressa in secondi, bensì in numero di operazioni elementari che un algoritmo deve compiere per risolvere un problema. Perche? perchè il tempo di esecuzione di un algoritmo dipende da molti fattori, come la macchina su cui viene eseguito, il linguaggio di programmazione, ecc. Quindi per confrontare due algoritmi è meglio usare il numero di operazioni elementari.
+\\
+\\
+Ma se avessi un algoritmo che riordina i numeri naturali da 1 a n in ordine crescente, ma sono fortunato e me li danno gia riordinati, cosa faccio con la complessità? \\
+per questo esistono tre notazioni principali: 
+\begin{itemize}
+    \item $O$: indica il caso peggiore
+    \item $\Omega$: indica il caso migliore
+    \item $\Theta$: indica il caso medio
+\end{itemize}
+Il caso più importante è quello peggiore, data anche la legge di Murphy. 
+\\
+\\
+{\textcolor{esempio}{Esempio: }}  Moltipilicazioni di matrici/vettori, \\ 
+Supponiamo di avere due vettori, quindi matrici monodimensionali,  di lunghezza n, e vogliamo eseguire una moltiblicazione tra le due, \\
+data una classica moltiplicazione tra vettori è banale dire che la complessità sia $O(n)$, moltiplico l'elemento $V_{i} \cdot W_{i}$ e sommo il risultato, ma se volessi fare una moltiplicazione tra matrici? \\ 
+\\
+{\textcolor{codice}{Codice: }} 
+Definisco due matrici $A$ e $B$ di dimensione $n \times m$ e $m \times l$. \\
+\begin{lstlisting}[style=mystyle]
+(*@ $i,j,k = 1$ @*)
+for((*@ $i \longrightarrow n$ @*)) {
+     for((*@ $ j \longrightarrow  l$@*) ) {
+          C[i][j] = 0;
+          for((*@ $k \longrightarrow m$ @*)) {
+               C[i][j] += A[i][k] * B[k][j];
+          }
+     }
+}
+\end{lstlisting}
+Lo so è tnato, ma andando per gradi si riesce a fare qualsiasi cosa. Parto dal for a riga 5, verra eseguito un numero di volte pari a $m$ poichè vado da $k=1$ a $m$ (raggiono gia in ordini di grandezza, altrimenti sarebbe $5m + 1$),
+Ora guardo il for a riga 3 il quale verrà eseguito $l$ volte, e infine il for a riga 1 che verrà eseguito $n$ volte. \\
+quindi la complessità totale sarà $O(n \cdot m \cdot l)$. \\
+
+
+\subsection{{O grande}}
+Mi dispiace ma un pò di matematica serve sempre,  questa è la definizione formale di O grande: \\
+$f  \in O(g)$ \\ \\
+\textbf{$\cdot \exists_{c > 0} \: \exists_{n_{0}} \: \forall_{n \ge \overline{n}} \quad f(n) \leq c \cdot g(n)$} \\
+\\
+Tutto questo per dire che dopo una cerca $\overline{n}$ la funzione g sarà sempre più grande di f, e quindi posso dire che f è $O(g)$.\\
+Cosa significa? prendendo l'esempio della moltiplicazione tra matrici, la complessità è $O(n \cdot m \cdot l)$, ma se dicessi che la complessità fosse $0(2 \cdot n \cdot m \cdot l)$ sarebbe comunque corretto, impreciso, ma corretto,  ecco perche se la mia funzione g è maggiore della mia f allora si può dire che f è $O(g)$.
+\\
+\\
+\subsubsection{{\textcolor{teorema}{Dimostrazione: }}}
+dimostro che se $f_{1} \in 0(g)$ e $f_{2} \in O(g)$ allora $f_{1} + f_{2} \in O(g)$ 
+\begin{itemize}
+    \item $\forall_{n > \overline{n}} \quad f_{1}(n) \le c^{1} \cdot g(n) $
+    \item $\forall_{n > \overline{n}} \quad f_{2}(n) \le c^{2} \cdot g(n) $
+\end{itemize} 
+
+$f_{1}(n) + f_{2}(n) \le c \cdot g(n) $\\
+\\
+prendendo:
+$c = (c^{1} + c^{2})$  e  $\overline{n} = max(\overline{n_{1}}, \overline{n_{2}})$
+\\
+\\
+Come esercizio avanzato si può dimostrare che $f_{1} \cdot f_{2} \in O(g)$
+
+\subsection{Il caso migliore $\Omega$}
+Come per l'O grande anche il caso migliore ha una definizione formale: \\
+$f \in \Omega(g)$ \\ \\
+\textbf{$\cdot \exists_{c > 0} \: \exists_{n_{0}} \: \forall_{n \ge \overline{n}} \quad f(n) \geq c \cdot g(n)$} \\
+
+\subsubsection{{\textcolor{teorema}{Dimostrazione: }}}
+Vorrei dimostrare che $f \in O(g) \leftrightarrow g \in \Omega(f)$
+\begin{itemize}
+    \item $\forall_{n > \overline{n}} \quad f(n) \ge c \cdot g(n) $
+\end{itemize}
+\[
+    \frac{f(n)}{c} \le g(n) = \frac{1}{c} \cdot f(n) \le g(n) = c^{'} \cdot f(n) \le g(n) \qquad \text{con } c^{'} = \frac{1}{c}
+\]
+
+\subsection{Il caso medio $\Theta$}
+Per $\Theta$ la definizione è un pò diversa: \\
+Supponiamo di avere una algoritmo tale che $A \in O(f)$ e $A \in \Omega(f)$ allora $A \in \Theta(f)$, 
+Cosa significa? che la complessità di A è sia minore che maggiore di f, quindi è uguale a f, cioè il mio algoritmo è il migliore possibile per quel problema. (salvo alcune eccezioni).
+
+
+\section{Algoritmi di Sorting}
+Di cosa si sta parlando? algoritmi i quali riescono a ordinare (input) una sequenza di oggetti su cui è definita una relazione d'ordinamento, in una (output) permutazione di quella sequenza.
+\\
+\\
+\textcolor{teorema}{Definizione}: Si dice \textcolor{teorema}{in loco} un algoritmo di ordinamento che non richiede spazio extra per l'ordinamento, ma utilizza solo lo spazio dell'array di input. \\ \\
+\textcolor{teorema}{Definizione}: Si dice \textcolor{teorema}{stabile} un algoritmo di ordinamento che mantiene l'ordine relativo degli elementi uguali. \\
+
+\subsection{Bubble Sort}
+Il Bubble Sort è un algoritmo di ordinamento molto semplice, ma anche molto inefficiente. \\
+L'idea di base è quella di scorrere l'array da sinistra a destra, confrontando due elementi adiacenti e scambiandoli se non
+sono ordinati. Questo processo viene ripetuto fino a quando non ci sono più scambi da fare. \\
+\\
+\subsubsection{{\textcolor{codice}{Codice: }}}
+\begin{lstlisting}[style=mystyle]
+void bubbleSort(int[] A) {
+    int n = A.length;
+    boolean swapped;
+    do {
+        swapped = false;
+        for (int i = 1; i < n; i++) {
+            if (A[i - 1] > A[i]) {
+                int temp = A[i - 1];
+                A[i - 1] = A[i];
+                A[i] = temp;
+                swapped = true;
+            }
+        }
+    } while (swapped);
+}
+\end{lstlisting}
+
+\subsubsection*{{\textcolor{teorema}{Complessità: }}}
+$\cdot $ La complessità temporale del Bubble Sort è $O(n^2)$ nel caso peggiore. \\
+$\cdot $ La complessità spaziale è $O(1)$ costante, essendo in-place. (non richiede spazio extra)
+
+\subsection{Insertion Sort}
+Come il bubbleSort anche l'insertionSort è un algoritmo di ordinamento molto semplice, ma più efficiente del bubbleSort. \\
+Perche usare un algoritmo inefficente quando ne esiste uno più efficiente? Semplice, l'inserction ha delle proprietà che lo rendono molto utile e a volte molto più efficiente di algoritmi che hanno complessità molto minore \\
+\\
+\\
+L'idea di base è quella di mantenere una parte dell'array ordinata e una parte disordinata. Ad ogni passo, si prende un elemento dalla parte disordinata e lo si inserisce nella parte ordinata, spostando gli elementi più grandi di esso a destra. 
+
+\subsubsection{{\textcolor{codice}{Codice}}}
+\begin{lstlisting}[style=mystyle]
+void insertionSort(int[] A) {
+    int n = A.length;
+    for (int i = 1; i < n; i++) {
+        int key = A[i];
+        int j = i - 1;
+        while (j >= 0 && A[j] > key) {
+            A[j + 1] = A[j];
+            j--;
+        }
+        A[j + 1] = key;
+    }
+}
+\end{lstlisting}
+
+L'Insertion Sort ha delle proprietà che lo rendono molto utile in specifici contesti. Una di queste proprietà è che se l'array è già ordinato, la complessità temporale sarà $O(n)$, rendendolo molto efficiente per array quasi ordinati.\\
+Inoltre, questo algoritmo è stabile, il che significa che l'ordine dei duplicati non cambia, preservando l'ordine relativo degli elementi uguali.\\
+Infine, l'Insertion Sort è molto efficiente per ordinare piccole sequenze di numeri, rendendolo una scelta eccellente per piccoli dataset o come parte di algoritmi più complessi.
+
+\subsubsection*{{\textcolor{teorema}{Complessità: }}}
+$\cdot $ La complessità temporale dell'Insertion Sort è $O(n^2)$ nel caso peggiore .  $O(n)$ se ordinato \\
+$\cdot $ La complessità spaziale è $O(1)$ costante, essendo in-place. \\
+$\cdot $ Algoritmo è tabile
+
+\subsection{Selection Sort}
+Qui il concetto alla base è molto semplice: si cerca il minimo elemento dell'array e lo si scambia con il primo elemento. Poi si cerca il minimo elemento del sottoarray rimanente e lo si sc
+ambia con il secondo elemento, e così via. \\
+\\
+\subsubsection{{\textcolor{codice}{Codice}}}
+\begin{lstlisting}[style=mystyle]
+void selectionSort(int[] A) {
+    int n = A.length;
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < n; j++) {
+            if (A[j] < A[minIndex]) {
+                minIndex = j;
+            }
+        }
+        int temp = A[i];
+        A[i] = A[minIndex];
+        A[minIndex] = temp;
+    }
+}
+\end{lstlisting}
+
+\subsubsection*{{\textcolor{teorema}{Complessità: }}}
+$\cdot $ La complessità temporale del Selection Sort è $O(n^2)$ nel caso peggiore. \\
+$\cdot $ La complessità spaziale è $O(1)$ costante, essendo in-place. \\
+$\cdot $ Algoritmo non è stabile
+
+
+\subsection{Problema 1}
+Luca e Paolo chiacchierano del più e del meno, quando a un certo punto Luca chiede:
+
+``Quanti anni hanno i tuoi tre figli?''
+
+Paolo, un po’ infastidito, risponde:
+
+``Il prodotto delle loro età è 36.''
+
+Luca ci pensa su, ma dopo un attimo dice perplesso:
+
+``Mi serve un altro indizio.''
+
+Paolo, sempre più seccato, aggiunge:
+
+``La somma delle loro età è uguale al numero civico di questa casa.''
+
+Luca riflette ancora, ma scuote la testa:
+
+``Non mi basta, dammi un altro indizio!''
+
+Paolo, ormai rassegnato, dice:
+
+``Va bene… il più grande ha gli occhi azzurri.''
+
+Luca rimane in silenzio per qualche secondo, poi annuisce e sorride:
+
+``Ah, ora ho capito quanti anni hanno!''
+\\
+\\
+Questo problema sembra complesso, ma con un pò di raggionamento laterale, si riesce a risolvere. (Soluzione a fine PDF)
+
+\section{Equazioni di Ricorrenza}
+\textcolor{teorema}{Definizione}: Un'equazione di ricorrenza è un'equazione che definisce una funzione in termini di se stessa. \\
+\\
+Sono un modo per descrivere la complessità di un algoritmo ricorsivo, ad esemprio marge sort.  Sono utili per capire quanto tempo e spazio richiede un algoritmo e per confrontare algoritmi diversi. \\
+\\
+Poniamo ora il problema di calcolare il fattoriale dei primi \textbf{n} numeri naturali, quindi $f(n) = n!$.
+\subsection{Fattoriale}
+\begin{lstlisting}[style=mystyle]
+int fattoriale(int n) {
+    if (n == 0) return 1;
+    else return n * fattoriale(n - 1);
+}
+\end{lstlisting}
+
+Questo codice, se pur semplice, ha una complessità temporale non banale da calcolare. Per fortuna esistono l'equazioni di ricorrenza per facilitarci il lavoro e rendere il tutto semplice, \\
+\\
+\begin{itemize}
+    \item Iniziamo con esprimere la funzione fattoriale senza averla svolta neanche una volta $\Leftarrow T(n) $
+    \item Una volta averla svolta una volta avremo $T(n-1) + 1$ cioe le volta che devo eseguire la funzione + le volte che ho eseguito la funzione
+    \item Andando avanti $T(n-2) + 1 + 1$ e cosi via fino ad arrivare a $T(0)$
+    \item  Qundo avremmo eseguito la funzione n volte avremmo $T(0) + n$ con $T(0) = 1$ quindi $T(n) = T(n-1) + 1 = T(n-2) + 2 = ... = n + 1$  \\{\tiny{*$T(0) = 1 $ è dato dal caso base della funzione}}
+\end{itemize}
+Concludendo, anche se ora sembra banale dire che la funzione $\in O(n +1)$ che per ordini di grandezza è $O(n)$, ma non è sempre così semplice, ecco perche esistono le equazioni di ricorrenza. \\
+
+\subsubsection{Prova inversa e tecniche avanzate}
+Sia $T(n) = 2T(\lfloor \frac{n}{2} \rfloor) + n \in  O(n \cdot log(n))$ 
+\\
+\\
+Con:
+\[
+T(n) = 
+\begin{cases} 
+    costante & \text{se } n < a \\ 
+    2T\left(\left\lfloor \frac{n}{2} \right\rfloor\right) + n & \text{se } n \ge a
+\end{cases}
+\]
+Provare che la funzione appartenga a $O(n \cdot log(n))$ è un pò più complesso, ma non impossibile. \\
+\\
+Iniziamo col dire che affermare che qualcosa appartenga a $O(n \cdot log(n)) $ significa dire che $ T(n) \le c \cdot n \cdot log(n)$ {\tiny{*Definizione di O grande 2.3}} \\
+da qui possiamo iniziare a sostituire la funzione $T(n)$ con la sua definizione, quindi:
+\begin{align*}
+    T(n) &\le 2 c \lfloor \frac{n}{2} \rfloor \cdot log(\lfloor \frac{n}{2} \rfloor) + n \\
+            &\le c \cdot n \cdot log(\frac{n}{2} ) + n \\
+            &\le c \cdot n \cdot log(n) - c \cdot n  \cdot log(2) + n \quad  {\tiny{\text{se $n - c \cdot n \cdot log(2) \le 0$}}} \\
+            &\le c \cdot n \cdot log(2)
+\end{align*}
+Questo è vero se e solo se:
+\begin{align*}
+    0 &\ge n - c \cdot n \cdot log(2) \\
+    c &\ge \frac{n}{n \cdot log(2)} \\
+    c &\ge \frac{1}{log(2)} \\
+\end{align*}
+Il metedo della prova inversa o della sostituzione valida l'ipotesi quando esistono dei valori di $c$ che validano la disequazione che ho costruito.\\
+\\
+Ad esemprio, Sia $T(n) = T(\lfloor \frac{n}{2} \rfloor ) + T(\lceil \frac{n}{2} \rceil) + 1 \: \in O(n)$ \\ 
+\begin{align*}
+    T(n) &\le c \lfloor \frac{n}{2} \rfloor + c \lceil \frac{n}{2} \rceil+ 1 \\
+            &\le c( \lfloor \frac{n}{2} \rfloor + \lceil \frac{n}{2} \rceil) + 1 \\
+            &\le c \cdot n + 1
+\end{align*}
+Essendo che:  $c \cdot n + 1 \nleq  c \cdot n $  questa funzione non appartiene a $O(n)$. \\
+\\
+Anche se portebbe appartenere a $O(n \pm  b)$ con $b $ costante di ordine inferiore,
+\begin{align*}
+    T(n) &\le c \lfloor \frac{n}{2} \rfloor -b+ c \lceil \frac{n}{2} \rceil-b+ 1 \\
+            &\le c( \lfloor \frac{n}{2} \rfloor + \lceil \frac{n}{2} \rceil) + 1 -2b \\
+            &\le c \cdot n + 1 -2b
+\end{align*}
+In questo caso abbiamo che $c \cdot n + 1 -2b \leq c \cdot n - b$ è verificata quando $b \ge 1$ perche $1 - b \ge 0$ \\
+\\ cosi abbiamo dimostrato che questa funzione appartine a $O(n - b)$ che, per ordine di grandezza, appartine a $O(n)$.\\
+Ovviamente non è sempre possibile usare questo trucchetto, a volte la supposizione iniziale potrebbe essere semplicemente sbagliata.
+\subsection{Master Theorem}
+Se prendessimo un'equazione di ricorrenza del tipo: $ T(n) = a \cdot  T(\frac{n}{b}) + f(n) $ potremmo risolverla considerando i seguenti casi:
+\begin{itemize}
+    \item se $f(n) \in O(n^{log_{b} a - \epsilon})$ allora $T(n) \in \Theta(n^{log_{b} a})$
+    \item se $f(n) \in \Theta(n^{log_{b} a})$ allora $T(n) \in \Theta(f(n)\cdot log(n))$
+    \item se $f(n) \in \Omega(n^{log_{b} a + \epsilon})$ allora $T(n) \in \Theta(f(n))$
+\end {itemize}
+
+\textcolor{esempio}{Esempio:} $T(n) = 9T(\frac{n}{3}) + n$
+\begin{itemize} [label={}]
+     \item \begin{itemize}
+        \item $a = 9$
+        \item $b = 3$
+        \item $f(n) = n$
+        \end{itemize}
+        \item Quindi si avrà che $n^{\log_{b}(a)}= n^{\log_{3}(9)} = n^{2} \quad n \in O(n^{2 - \epsilon})\xrightarrow[\text{3\textsuperscript{o} caso}]{\phantom{3\textsuperscript{o} caso}} T(n) \in \Theta(n^2)$
+\end{itemize}
+
+\subsubsection*{ 1) \textcolor{esercizio}{Esercizi:}}
+\begin{enumerate}
+    \item $T(n)  = T(n-1) + n \quad \in O(n^2)$    
+    \item $T(n) = 3T(\lfloor \frac{n}{4} \rfloor + n)$
+    \item $T(n) = 4T(\frac{n}{2}) + n^{3}$
+    \item $T(n) = 4T(\frac{n}{2}) + n^{log_{2}(4)}$
+\end{enumerate}
+{\tiny{Soluzione a fine PDF}}
+
+
+\section{Algoritmi di Sorting Ricorsivi}
+Ora che abbiamo capito come studiare la complessità di un algoritmo ricorsivo, possiamo anche studiare gli algoritmi di sorting ricorsivi. \\ 
+In genere questo tipo di algoritmi sono più complessi da implementare, ma più efficienti rispetto agli algoritmi iterativi. \\
+Infatti, storicamente sono stati molto disprezzati poiche riempivano le memorie con i loro stack, ma ora che le memorie sono enormi e gli algoritmi iterativi sono stati superati in efficienza, sono tornati di moda. \\
+
+\subsection{Merge Sort}
+Ed ecco che uno di quei algoritmi ricorsivi super di gran lunga la complessità di un algoritmo iterativo, al modico prezzo di un po di spazio in memoria per le chiamate ricorsive, il Merge Sort. \\
+L'idea di base è quella di dividere l'array in due metà, ordinare ricorsivamente ciascuna metà e poi unire le due metà ordinate. \\
+difficile da visualizzare? beh non è un problema, basta pensare a un mazzo di carte, lo divido in due mazzi, ordino i due mazzi e poi unisco i due mazzi ordinati. \\
+\\
+\subsubsection{{\textcolor{codice}{Codice}}}  
+\begin{lstlisting}[style=mystyle]
+void mergeSort(int[] A, int left, int right) {
+    if(left < right) {
+        int mid = (left + right) / 2;  //per difetto 
+       mergeSort(A,left, mid);
+       marge(A, left, mid, right);
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=mystyle]
+void marge(int[] A, int left, int mid,  int right){
+    int i = 1;
+    int j = left + 1;
+    int k = mid + 1;
+    int[] B = new int[right - left + 1];
+    while(j <= mid || k <= right) {
+        if( j <= mid && (k < right || A[j] < A[k])) {
+            B[i] = A[j];
+            j++
+        } else {
+            B[i] = A[k];
+            k++;
+        }
+        i++;
+    }
+}
+\end{lstlisting}
+\newpage
+Ok, so che sembra tanto, ma non è così complesso come sembra, basta capire il concetto di base e il resto viene da se. \\
+La funzione mergeSort è la funzione principale che divide l'array in due metà e chiama ricorsivamente se stessa per ordinare ciascuna metà. La funzione merge è quella che unisce le due metà ordinate. \\
+La funzione merge prende tre argomenti: l'array da ordinare, gli indici di inizio e fine dell'array. La funzione merge crea un array temporaneo B per memorizzare gli elementi ordinati e poi copia gli elementi ordinati nell'array originale. \\
+Alla fine avremmo l'array B ordinato, e lo copiamo nell'array originale, oppure ritorniamo semplicemente B\\
+\\
+\subsubsection*{{\textcolor{teorema}{Complessità: }}}
+$\cdot $ La complessità temporale del Merge Sort è $O(n \cdot log(n))$ nel caso peggiore. \\
+$\cdot $ La complessità spaziale è $O(n)$, poichè richiede spazio extra per l'array temporaneo. \\
+$\cdot $ Algoritmo non è stabile, ma può essere reso stabile con piccole modifiche. \\
+
+\subsubsection{Equazione di Ricorrenza}
+L'equazione di ricorrenza per il Merge Sort è: $ T(n) = 2T(\frac{n}{2}) + n $ \\
+il $2T(\frac{n}{2})$ rappresenta la divisione in due metà, e il fatto che su tutte e due le metà chiamo il mergeSort, mentre il $n$ rappresenta il costo di unione delle due metà ordinate. \\
+La soluzione di questa equazione di ricorrenza è $T(n) \in O(n \cdot log(n))$ poichè rientra nel caso 2 del teorema dell'esperto, se si vuole fare la contro prova basti usare l'altro metodo e assumere che $O(nlogn)$ sia la complessità su cui fare la prova.
+\\
+\\
+*Se ti stai chiedendo se copiando l'array B nell'array originale si avrebbe un costo maggiore, ti consiglio di andare a rileggere la definizione di ordine di grandezza, poichè la copia ha complessità $O(n)$, la complessità finale sarebbe  $O(2n \cdot log(n))$ che, per ordine di grandezza ritornerebbe ad essere $O(n \cdot log(n))$ \\
+
+\subsection{Quick Sort}
+Un altro algoritmo ricorsivo molto efficiente è il Quick Sort, molto efficente ma anche molto inefficente, poichè nel caso peggiore la sua complessità si alza fino a $O(n^2)$, questo dipende principalmento da come scegliamo di partizionare l'array, ma andando per gradi.\\ \\
+L'idea di base è quella di scegliere un elemento come pivot e partizionare l'array in due sottoarray: uno contenente gli elementi minori del pivot e l'altro contenente gli elementi maggiori del pivot. Poi si ordina ricorsivamente ciascun sottoarray. Alla fine, si ottiene un array ordinato unendo i due sottoarray ordinati con il pivot.\\ \\ \\ \\ \\ 
+\subsubsection{{\textcolor{codice}{Codice}}}
+\begin{lstlisting}[style=mystyle]
+    void quickSort(int[] A, int left, int right) {
+        if(left < right){
+            int pivot = partition(A, left, right); //per difetto
+            quickSort(A, left, pivot)
+            quickSort(A, pivot + 1, right);
+            }
+            }
+        \end{lstlisting}
+        
+        \begin{lstlisting}[style=mystyle]
+            int partition(int[] A, int left, int right) {
+                int  pivot = A[left];
+                int i = left - 1;
+                int j = right + 1;
+                while(true) {
+                    repeat j-- until A[j] <= pivot;
+                    repeat i++ until A[i] >= pivot;
+                    if(i < j)
+                    swap(A[i], A[j]); // O(1) scambia elementi
+                    else
+                    return j;
+                    }
+                \end{lstlisting}
+                
+                \subsubsection*{{\textcolor{teorema}{Complessità: }}}
+                $\cdot $ La complessità temporale del Quick Sort è $O(n \cdot log(n))$ nel caso medio e $O(n^2)$ nel caso peggiore. \\
+                $\cdot $ La complessità spaziale è $O(log(n))$ per lo stack delle chiamate ricorsive. \\
+                $\cdot $ Algoritmo non è stabile, ma può essere reso stabile con modifiche.
+                
+                \subsubsection{Equazione di Ricorrenza}
+                L'equazione di ricorrenza per il Quick Sort è: $T(n) = T(k) + T(n-k-1) + n$, dove $k$ è il numero di elementi nel primo sottoarray. Nel caso medio, $k \approx n/2$, quindi $T(n) = 2T(n/2) + n$, che si risolve in $O(n \cdot log(n))$. Nel caso peggiore, $k = 0$ o $k = n-1$, quindi $T(n) = T(n-1) + n$, che si risolve in $O(n^2)$.
+                
+                \subsection{Quick Sort Randomized}
+                Per rendere meno probabile il caso peggiore si potrebbe aggiungere un fattore randomico alla scelta della partizione, ad esempio:
+                \begin{lstlisting}[style=mystyle]
+                    void randomizedPartitio(int[] A, int left, int right) {
+                        int pivot = random.nextInt(left, right);
+                        swap(A[pivotI], A[left]);
+                        return partition(A, left, right);
+                        }
+                    \end{lstlisting}
+                    In questo modo, la scelta del pivot è casuale e quindi il caso peggiore è meno probabile. La complessità rimane $O(n \cdot log(n))$ nel caso medio e $O(n^2)$ nel caso peggiore, ma la probabilità di raggiungere il caso peggiore è molto bassa.
+                    
+                    \section{Introduzione alle Strutture Dati: Heap}
+                    Partiamo col dire che confrontando ogni elemento di un array non potremmo mai avere una complessità inferiore a $\Theta(n)$, per abbassare ancora di più quest'asticella abbiamo bisogno di strutture specifiche che ci permettano di accedere agli elementi in modo più efficiente. \\
+                    Una di queste strutture è l'Heap.
+                    \subsection{proprietà di un Heap}
+                    Per far si che la complessità scenda sotto $\Theta(n)$ è necessario che la struttura dati abbia delle proprietà specifiche, in questo caso l'Heap ha le seguenti proprietà:
+                    \begin{itemize}
+                        \item Deve essere un albero binario completo o semicompleto
+                        \item I nodi contengo oggetti su cui è definita una relazione d'ordinamento
+                        \item Per ogni nodo il contenuto e minore o uguale al contenuto dei suoi figli
+                    \end{itemize}
+                    Se tutte queste proprietà sono soddisfatte, allora l'Heap è una struttura dati valida. \\ \\
+                    
+                    \subsubsection{Proprietà derivate: Alberi completi}
+                    *Ma cosa significa che deve essere un albero binario completo o semicompleto? \\
+                    \textcolor{teorema}{Definizione}: Un albero binario di ricerca è un albero binario in cui ogni nodo ha un valore e i valori dei nodi a sinistra sono minori del valore del nodo padre, mentre i valori dei nodi a destra sono maggiori del valore del nodo padre. \\
+                    Detto in parole povere: Un albero binario completo ogni nodo deve avere necessariamente 2 figli, mentre un albero binario semicompleto ha una metà che si differenza  dall'altra per al più un figlio, ad esempio, se mi mettessi sul nodo radice e guardassi i suoi figlii, vedrei che i figli del figlio destro sono al massimo n+1 rispetto ai figli del figlio sinistro. 
+                    \begin{itemize}
+                        \item le foglie di un albero completo sono $foglie = \lceil\frac{nodi}{2}\rceil$
+                        \item la profondità di un albero completo è $\lceil log_{2}(n) \rceil$
+                    \end{itemize}
+                    *Nota: per essere completo un albero binario può anche avere tutti i nodi con 0 figli, poichè un  singolo nodo soddisfa le proprietà di un albero binario completo. \\
+                    
+                    \subsection{Heap Sort}
+L'Heap Sort è un algoritmo di ordinamento che utilizza la struttura dati Heap per ordinare gli elementi. L'idea di base è quella di costruire un Heap a partire dall'array da ordinare e poi estrarre gli elementi dall'Heap in ordine crescente. \\
+L'algoritmo funziona in due fasi:
+\begin{itemize}
+    \item Costruzione dell'Heap: si costruisce un Heap a partire dall'array da ordinare. Questo richiede $O(n)$ tempo.
+    \item Estrazione degli elementi: si estrae l'elemento minimo dall'Heap e lo si inserisce nell'array ordinato. Questo richiede $O(n \cdot log(n))$ tempo.
+\end{itemize}
+
+\subsubsection{\textcolor{codice}{Codice}}
+\begin{lstlisting}[style=mystyle]
+void buildHeap(int[] A) {  // costruzione dell'heap
+    int size = A.length;
+    for (int i = size / 2 ; i > 0; i--) { // per difetto
+        heapify(A, size, i);
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=mystyle]
+void extractMax(int[] A) {  // estrazione dell'elemento massimo
+    int size = A.length;
+    for(int i = size - 1; i > 0; i--) {
+        swap(A[0], A[i]); // scambia l'ultimo elemento
+        heapify(A, i, 0); // ricostruisce l'heap
+    }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=mystyle]
+void heapify(int[] A, int size, int i) {  // ricostruzione dell'heap
+    int longest;
+    int  left = 2 * i;  // figlio sinistro / left[i]
+    int right = 2 * i + 1; // figlio destro / right[i]
+    if(left < size && A[left] > A[i])  
+        longest = left;
+    else  
+        longest = i;
+    if(right < size && A[right] > A[longest]) 
+        longest = right;
+    if(longest != i) {
+        swap(A[i], A[longest]); // scambia i nodi
+        heapify(A, size, longest); // ricostruisce l'heap
+    }
+}
+\end{lstlisting}
+
+\subsubsection*{\textcolor{teorema}{{Complessità:}}}
+$\cdot $ La complessità temporale dell'Heap Sort è $O(n \cdot log(n))$ nel caso peggiore. \\
+$\cdot $ La complessità spaziale è $O(1)$ costante, essendo in-place. \\
+$\cdot $ Algoritmo non è stabile, ma può essere reso stabile con modifiche. \\
+$\cdot $ La costruzione dell'Heap richiede $O(n)$ tempo, mentre l'estrazione degli elementi richiede $O(n \cdot log(n))$ tempo. \\
+
+
+\subsection{Problema 2: Limiti inferiori}
+Prima di affrontare gli algoritmi di ordinamento con complessità O(n)O(n), vorrei fare una digressione sui limiti inferiori e su come quasi ogni problema possa essere ricondotto a un albero decisionale.
+Da qui nasce il problema dei pesi:
+Problema 2: Abbiamo 12 sfere apparentemente identiche, ma una di esse ha un peso diverso (potrebbe essere più leggera o più pesante, ma non sappiamo quale).
+L'obiettivo è individuare la sfera anomala e determinare se è più leggera o più pesante, utilizzando esclusivamente una bilancia a due piatti e un massimo di tre pesate.
+Come possiamo risolvere il problema? {\tiny{*Soluzione a fine PDF}}\\
+\\
+Ma invece di buttarci subito a capofitto nella soluzione, proviamo a capire se è possibile risolverlo.
+Il che è molto facile da capire: $log_{3}(25)$ la base del logaritmo indica le possibilità che abbiamo, e il numero 25 indica il numero di casi  che abbiamo per determinare quale sia la sfera anomala. \\
+il risultato del logaritmo è $\approx  2.9$, questo numero ci dice che con 3 pesate è possibile individuare la sfera anomala. Quindi si è possibile trovare la sfera anomala,  poichè ci hanno fornito abbastanza pesate.
+Ma questo a cosa serve? capendo quale sia il limite inferiore di qualcosa possiamo anche capire quale sia l'asticella che non può essere superata.
+
+\subsubsection*{Limite inferiore degli algoritmi di ordinamento per confronto}
+Se ponessimo nello stesso modo del problema un qualsiasi algoritmo di ordinamento, avremmo che il numero di confronti necessari per ordinare n elementi è almeno $log_{2}(n!)$.
+Questo è dovuto al fatto che ci sono $n!$ permutazioni possibili di n elementi e ogni confronto può eliminare al massimo la metà delle permutazioni rimanenti. Quindi, il numero minimo di confronti necessari per ordinare n elementi è $log_{2}(n!)$,
+e, avendo presente alcune proprietà dei logaritmi e dei fattoriali, possiamo semplificare in $O(n \cdot log(n))$.\\
+\\
+Ma come detto in precedenza, non è sempre sufficente un $O(n\cdot log(n))$,  ma volendo scendere sotto questa soglia abbiamo bisogno di avere una struttura dati oppure dei vincoli specifici che ci permettano di farlo. \\
+
+
+\section{Algoritimi di Ordinamento $\in O(n)$}
+Per far is che un algoritmo scenda sotto il limite inferiore di $O(n \cdot log(n))$, come detto in precedenza, dobbiamo porre qualche vincolo.
+\subsection{Counting Sort}
+Il Counting Sort è un algoritmo di ordinamento che funziona bene quando gli elementi da ordinare sono numeri interi compresi in un intervallo limitato. L'idea di base è quella di contare il numero di occorrenze di ciascun elemento e poi costruire l'array ordinato a partire da questi conteggi. \\
+L'idea di base è quella di contare il numero di occorrenze di ciascun elemento e poi costruire l'array ordinato a partire da questi conteggi. 
+\subsubsection{\textcolor{codice}{Codice}}
+\begin{lstlisting}[style=mystyle]
+void countingSort(int[] A, int k) { // con K numero massimo
+    int[] count = new int[k + 1]; // array di conteggio
+    int[] output = new int[A.length]; // array di output
+    for(int i = 1; i <= k; i++) {
+        count[i] = 0; // inizializza l'array di conteggio
+    }
+    for(int i = 0; i < A.length; i++) {
+        count[A[i]]++; // conta le occorrenze
+    }
+    for(int i = 1; i <= k; i++) {
+        count[i] += count[i - 1]; // accumula le occorrenze
+    }
+    for(int i = A.length - 1; i >= 0; i--) {
+        output[count[A[i]] - 1] = A[i];
+        count[A[i]]--; // decrementa il conteggio
+    }
+\end{lstlisting}
+
+\subsubsection*{\textcolor{teorema}{Complessità:}}
+$\cdot $ La complessità temporale del Counting Sort è $O(n + k)$, dove n è il numero di elementi da ordinare e k è il valore massimo degli elementi. \\
+$\cdot $ La complessità spaziale è $O(k)$, poichè richiede spazio extra per l'array di conteggio. \\
+$\cdot $ Algoritmo stabile, poichè mantiene l'ordine relativo degli elementi con lo stesso valore. \\
+$\cdot $ Funziona bene quando k è relativamente piccolo rispetto a n, altrimenti la complessità spaziale può diventare elevata. \\
+
+
+\subsection{Radix Sort}
+Il Radix Sort è un algoritmo di ordinamento che funziona bene quando gli elementi da ordinare sono numeri interi o stringhe di caratteri. \\
+L'idea è quella di ordinare gli elementi in base a ciascuna cifra o carattere, partendo dalla cifra meno significativa (o dal carattere meno significativo) e procedendo verso la cifra più significativa (o il carattere più significativo). \\
+L'algoritmo utilizza il Counting Sort come sottoprocedura per ordinare gli elementi in base a ciascuna cifra o carattere. \\
+
+
+\subsubsection{\textcolor{codice}{Codice}}
+\begin{lstlisting}[style=mystyle]
+void radixSort(int[] A) {
+    int max = getMax(A); // trova il valore massimo
+    for(int exp = 1; max / exp > 0; exp *= 10) {
+        countingSort(A, exp); // ordina in base alla cifra corrente
+    }
+}
+\end{lstlisting}
+
+\subsubsection*{\textcolor{teorema}{Complessità:}}
+$\cdot $ La complessità temporale del Radix Sort è $O(n \cdot k)$, dove n è il numero di elementi da ordinare e k è il numero di cifre (o caratteri) massime. \\
+$\cdot $ La complessità spaziale è $O(n + k)$, poichè richiede spazio extra per l'array di conteggio e l'array di output. \\
+$\cdot $ Algoritmo stabile, poichè mantiene l'ordine relativo degli elementi con lo stesso valore. \\
+$\cdot $ Funziona bene quando k è relativamente piccolo rispetto a n, altrimenti la complessità spaziale può diventare elevata. \\
+
+\subsection{Bucket Sort}
+Il Bucket Sort è un algoritmo di ordinamento che funziona bene quando gli elementi da ordinare sono distribuiti uniformemente in un intervallo limitato. \\
+L'idea è quella di suddividere gli elementi in un certo numero di "secchi" (o bucket) e poi ordinare ciascun secchio separatamente. Alla fine, si uniscono i secchi ordinati per ottenere l'array finale ordinato. \\
+
+\subsubsection{\textcolor{codice}{Codice}}
+\begin{lstlisting}[style=mystyle]
+void bucketSort(int[] A, int k) {  // massimo dell'array
+    List<List<Integer>> buckets = new ArrayList<>(k);
+    for(int i = 0; i < k; i++) {
+        buckets.add(new ArrayList<>()); // crea i secchi
+    }
+    for(int i = 0; i < A.length; i++) {
+        int index = A[i] / k; // trova il secchio corretto
+        buckets.get(index).add(A[i]); // aggiunge l'elemento al secchio
+    }
+    for(int i = 0; i < k; i++) {
+        Collections.sort(buckets.get(i)); // ordina ciascun secchio
+    }
+}
+\end{lstlisting}
+
+
+
+
+\subsubsection*{\textcolor{teorema}{Complessità:}}
+$\cdot $ la complessità temporale del Bucket Sort è $O(n + \kappa)$ dato da $n$ numero di elementi da ordinare, $\kappa$ numero massimo di elementi in un secchio, dato che l'inserimento nei bucket è $\Theta(1)$ e, se distribuiamo uniformemente gli elementi in ogni bucket, la complessità finale è $O(n)$. \\
+$\cdot $ La complessità spaziale è $O(n + k)$, poichè richiede spazio extra per i secchi e l'array di output. \\
+$\cdot $ Algoritmo stabile, poichè mantiene l'ordine relativo degli elementi con lo stesso valore. \\
+$\cdot $ nel caso peggiore, cioè se distribuisco non unifirmemente gli elementi, posso arrivare ad una complessità di $O(n^2)$, ma questo è molto raro, una probabilità, se si strutturano bene i secchi, di $\frac{1}{n^{n-1}}$  \\
+
+\section{Problema della selezione}
+Il problema è definito da due concetti, un input e un output. 
+L'input è una sequenza di oggetti su cui è definita una relazione d'ordinamento, con indice i compreso tra 1 e n, 
+l'outpuy è l'oggetto che occupa la posizione i-esima nella sequenza ordinata. \\
+\\
+Sappiamo che esistono limiti superiori e inferiori per cui un algoritmo risiede in un dato intervallo,
+per quanto riguarda gli algoritmi di ordinamento i vari limiti sono già stati trattati, ma , non ho mai parlato degli algoritmi di selezione. \\
+\\
+Un limite superiore di questi algoritmi è $O(n \cdot log(n) )$, dato che l'algoritmo deve ordinare un array di dimensione, al più, n. \\
+Un limite inferiore è $\Omega(n)$, dato che l'algoritmo deve esaminare ogni elemento dell'array almeno una volta. \\
+\\
+come esempio abbiamo:
+\begin{lstlisting}[style=mystyle]
+    int select(int[]A, int start, int end, int index){
+        if(start == end) return A[start];
+
+        int partition = partition(A, start, end);
+         // arrondato per difetto
+        int pivot = partition - start + 1;
+
+        if(index == pivot)
+            return select(A, start, partition, index);
+        else
+            return select(A, partition + 1, end , index - pivot);
+    }
+\end{lstlisting}
+Possiamo notare che nel caso peggiore l'algoritmo ha una complessità $T(n) = T(n-1) + n$, che si risolve in $\Theta(n^2)$, invece, nel caso medio la complessità è $\Theta(n)$, poichè la partizione divide l'array in due metà, cioè $T(n) = n +T(\frac{n}{2})$. \\
+
+\section{Selezione del massimo e del minimo}
+Ora che abbiamo introdotto il concetto di selezione, possiamo complicare un pò le cose e, invece di selezionare un elemento a caso, selezionare il massimo e il minimo. \\
+\\
+\subsection{Select Min/Max}
+In tempo lineare è possiblile trovare il minimo o il massimo di un array:
+\subsubsection{\textcolor{codice}{Codice}}
+\begin{lstlisting}[style=mystyle]
+    int minimo(int[] A) {
+        int min = A[0];
+        for(int i = 1; i < A.length; i++) 
+            if(A[i] < min) 
+                min = A[i];
+        return min;
+    }
+\end{lstlisting}
+{\small{*Nota: trovare il minimo equivale a trovare select(A, 0) e trovare il massimo equivale a trovare select(A, n-1).}} \\ \\
+È facile vedere che la complessità è lineare, ma, se volessimo andare al di sotto di questa soglia? è possibile? \\
+
+\subsubsection{Trovare il minimo e il massimo in meno di $O(n)$}
+Per trovare il massimo (o il minimo) elemento di un array di grandezza n, bisogna fare almeno n-1 confronti, poichè, bisogna confrontare 
+ogni elemento con l'elemento massimo (o minimo) corrente.  Di conseguenza, non è possibile avere un algoritmo per la ricerca del massimo (o minimo) 
+in cui c'è un elemento che non "perde
+
+
+%---------------------------------------------------------------------------------------------- Fine PDF
+
+\subsection{Esempio di Immagine}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{example-image}
+    \caption{Esempio di immagine}
+\end{figure}
+
+\subsubsection*{Soluzione Problema 1}
+\[
+\exists_{a,b,c} \: \exists_{x} \: | \quad a \cdot b \cdot c = 36 \land  a_{1} + b_{1} + c_{1} = x  = a_{2} + b_{2} + c_{2} \land a_{1} > b_{1} \ge c_{1}
+\]
+Dobbiamo trovare tre numeri il cui prodotto sia 36. Tuttavia, ci sono molte combinazioni possibili, quindi abbiamo bisogno di un ulteriore indizio.
+Sfortunatamente, nemmeno conoscere il numero civico è sufficiente, perché Luca ha dovuto chiedere ancora un altro suggerimento. Questo significa che, tra tutte le combinazioni possibili, ce ne sono almeno due che hanno la stessa somma.
+Infatti, le coppie (2,2,9) e (1,6,6) soddisfano entrambe la condizione, poiché la loro somma è 13. A questo punto, l'ultimo indizio diventa decisivo: Paolo specifica che solo uno dei suoi figli è più grande degli altri due.
+Tra le due combinazioni, solo (2,2,9) soddisfa questa condizione, perché in (1,6,6) ci sarebbero due figli della stessa età.
+La risposta corretta è quindi 2,2,9.
+\subsubsection*{Soluzione Esercizi (1)}
+\textbf{1)} $T(n) = T(n-1) + n \quad \in O(n^2)$ \\
+\begin{align*}
+    T(n)  &\le c(n-1)^{2} + n \\
+            &\le  c(n^{2} - 2n + 1) + n \\
+            &\le cn^{2} - 2cn + c + n \\
+\end{align*}
+Ora avendo trovato $c \cdot n^2$ mi basta trovare quando $-2cn + c + n \leq 0$ \\
+\begin{align*}
+    0 &\ge -2cn + c + n \\
+    0 &\ge n - 2cn + c \\
+    2c &\ge n + c \\
+    c &\ge \frac{n}{2} + \frac{1}{2}
+\end{align*}
+Quindi la funzione appartiene a $O(n^2)$ se $c \ge \frac{n}{2} + \frac{1}{2}$, quindi la funzione appartiene a $O(n^2)$\\
+\\
+\textbf{2)} $T(n) = 3T(\lfloor \frac{n}{4} \rfloor + n)$ \\
+Per questa funzione è molto più semplice, basta applicare il teorema dell'esperto, o master theorem, e vedere che $T(n) \in O(n)$, basti vedere che $n^{log_{4}(3) + \epsilon} = n$ {\tiny{per chiunque stia leggendo, questa cosa è una bestemmia nero su bianco, ma è molto semplice da capire, per favore non replicatela}} \\ \\
+\textbf{3)} $T(n) = 4T(\frac{n}{2}) + n^{3}$ \\
+Anche qui basta il Teorema dell'esperto il che ci riconduce al caso 3 del teorema, quindi $T(n) \in O(n^{3})$ \\  \\
+\textbf{4)} $T(n) = 4T(\frac{n}{2}) + n^{log_{2}(4)}$ \\
+caso 2 del teorema, quindi $T(n) \in O(n^{log_{2}(4)} \cdot log(n)) \rightarrow O(n^{2} \cdot log(n))$  \\
+
+\subsubsection*{Soluzione Problema 2}
+Per risolvere il problema delle 12 sfere (dove una sfera ha un peso diverso, senza sapere se è più leggera o più pesante) con 3 pesate, seguiamo questi passaggi:
+\begin{enumerate}[label={}, leftmargin=2cm]
+  \item \textbf{Pesata 1:}
+  \begin{itemize}
+    \item Dividi le 12 sfere in 3 gruppi:
+      \begin{itemize}
+        \item Gruppo A: \{1,2,3,4\}
+        \item Gruppo B: \{5,6,7,8\}
+        \item Gruppo C: \{9,10,11,12\}
+      \end{itemize}
+    \item Poni il Gruppo A sul piatto sinistro e il Gruppo B sul piatto destro.
+    \item \textbf{Se la bilancia è in equilibrio:}
+      \begin{itemize}
+        \item Le sfere dei Gruppi A e B sono normali.
+        \item L'anomalia è nella sfera appartenente al Gruppo C.
+      \end{itemize}
+    \item \textbf{Se la bilancia è sbilanciata:}
+      \begin{itemize}
+        \item L'anomalia si trova tra le sfere dei Gruppi A e B.
+        \item L'indicazione della bilancia fornisce un primo indizio sulla natura dell'anomalia (più pesante o più leggera).
+      \end{itemize}
+  \end{itemize}
+
+  \item \textbf{Pesata 2:}
+  \begin{itemize}
+    \item \textbf{Se la Pesata 1 era in equilibrio:}
+      \begin{itemize}
+        \item Confronta 3 sfere normali (da uno dei gruppi già confermati, ad esempio dal Gruppo A) con 3 sfere del Gruppo C.
+        \item \textbf{Se in equilibrio:} l'anomalia è la sfera non pesata del Gruppo C.
+        \item \textbf{Se sbilanciata:} l'anomalia è tra le 3 sfere pesate del Gruppo C.
+      \end{itemize}
+    \item \textbf{Se la Pesata 1 era sbilanciata:}
+      \begin{itemize}
+        \item Esegui una pesata strategica scambiando alcune sfere sospette con altre.
+        \item L’obiettivo è restringere il campo delle sfere sospette e ottenere ulteriori indicazioni sulla loro natura.
+      \end{itemize}
+  \end{itemize}
+
+  \item \textbf{Pesata 3:}
+  \begin{itemize}
+    \item Utilizza la terza pesata per confrontare le sfere rimanenti sospette.
+    \item Confronta una o due sfere sospette con sfere normali (già confermate) per determinare esattamente:
+      \begin{itemize}
+        \item Quale sfera è l'anomala.
+        \item Se l'anomalia consiste in un peso maggiore o minore rispetto alle altre.
+      \end{itemize}
+  \end{itemize}
+\end{enumerate}
+
+\end{document}
+% Ensure there are no extra closing braces above this line
